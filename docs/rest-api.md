@@ -23,6 +23,8 @@ nav: sidebar/rest-api.html
 
 2022-08-12: change maxNumAlgoOrders to 5 in filter MAX_NUM_ALGO_ORDERS
 
+2022-11-30: add Sub-account Endpoints
+
 <!--more-->
 
 # Public Rest API for Coins (2022-09-12)
@@ -1966,3 +1968,304 @@ listenKey | STRING | YES |
 ```javascript
 {}
 ```
+
+
+### Sub-account Endpoints
+
+#### Sub-account create  (For Master Account)
+
+```shell
+POST /openapi/v2/subAccount/create (HMAC SHA256)
+```
+**Weight:** 3
+
+**Parameters:**
+
+Name | Type   | Mandatory | Description
+------------ |--------|-----------| ------------
+accountName | STRING | YES       | Email Format
+
+**Response:**
+
+```javascript
+{
+    "accountId": "1265943331948594180",
+    "accountName": "shinee_sub2@coins.ph",
+    "accountType": 1,
+    "userId": "1265943331873040130",
+    "parentId": "1239115764088179970"
+}
+```
+
+#### Sub-account transfer  (master to sub, sub to master)
+
+```shell
+POST /openapi/v2/subAccount/transfer (HMAC SHA256)
+```
+**Weight:** 3
+
+**Parameters:**
+
+Name | Type   | Mandatory | Description
+------------ |--------|-----------| ------------
+fromAccountId | LONG   | YES       |  id of the transfer source master account
+toAccountId | LONG   | YES       | id of the target master account
+tokenId | STRING | YES       | currency
+amount | STRING   | YES       | amount of
+
+**Response:**
+
+```javascript
+{
+    success:true
+}
+```
+
+#### Query Sub-account List (For Master Account)
+
+```shell
+POST /openapi/v1/subAccount/list (HMAC SHA256)
+```
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+**Response:**
+
+```javascript
+[
+  {
+    "userId": 1262289401616024831
+    "accountId": 1262289401616024833,
+    "accountName": "testsub@gmail.com",
+    "accountType": 1,
+    "parentId": 1262289401616024830
+  },
+  {
+    "userId": 1262289401616024832
+    "accountId": 1262289401616024834,
+    "accountName": "testsub2@gmail.com",
+    "accountType": 1,
+    "parentId": 1262289401616024830
+  }
+]
+```
+
+#### Query Sub-account asset (For Master Account)
+
+```shell
+POST /openapi/v1/subAccount/asset (HMAC SHA256)
+```
+**Weight:** 10
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ | ------------ | ------------
+subUserId | LONG | NO | sub userId
+recvWindow | LONG | NO |
+timestamp | LONG | YES |
+
+**Response:**
+
+```javascript
+[
+  {
+    "accountType": "SPOT",
+    "canTrade": true,
+    "canDeposit": false,
+    "canWithdraw": false,
+    "balances": [
+      {
+        "asset": "BTC",
+        "free": "10",
+        "locked": "0"
+      }
+    ],
+    "updateTime": 123456789,
+    "accountId": 1262289401616024833,
+    "accountName": "testsub@gmail.com"
+  },
+  {
+    "accountType": "SPOT",
+    "canTrade": true,
+    "canDeposit": false,
+    "canWithdraw": false,
+    "balances": [
+      {
+        "asset": "ETH",
+        "free": "20",
+        "locked": "0"
+      }
+    ],
+    "updateTime": 123456789,
+    "accountId": 1262289401616024834,
+    "accountName": "testsub2@gmail.com"
+  }
+]
+```
+
+
+#### Get IP WHITELIST for a Sub-account API Key (For Master Account)
+
+```shell
+POST /openapi/v1/subAccount/apiKey/ipList (HMAC SHA256)
+```
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ |-----------| ------------
+subUserId | LONG | YES       | sub userId
+apiKey | STRING | YES |
+recvWindow | LONG | NO        |
+timestamp | LONG | YES       |
+
+**Response:**
+
+```javascript
+{
+  "ipList": [
+    "1.1.1.1",
+    "2.2.2.2"
+  ],
+  "apiKey": "XXXXXX",
+  "userId": 1262289401616024831,
+  "updateTime": 12345678
+}
+```
+
+#### Update IP WHITELIST for a Sub-account API Key (For Master Account)
+
+```shell
+POST /openapi/v1/subAccount/apiKey/ipList/update (HMAC SHA256)
+```
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ |-----------| ------------
+apiKey | STRING | YES |
+ipAddress | STRING | YES | Can be added in batches, separated by commas. Max 5 for an API key
+recvWindow | LONG | NO        |
+timestamp | LONG | YES       |
+
+**Response:**
+
+```javascript
+true
+```
+
+#### Query Universal Transfer History (For Master Account)
+
+```shell
+POST /openapi/v1/subAccount/universalTransfer (HMAC SHA256)
+```
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ |-----------| ------------
+fromAccountId | LONG | NO |
+toAccountId | LONG | NO |
+startTime | LONG | NO |
+endTime | LONG | NO |
+page | page | NO | Default 1
+limit | page | NO | Default 500, Max 500
+recvWindow | LONG | NO        |
+timestamp | LONG | YES       |
+
+- fromAccountId and toAccountId cannot be sent at the same time.
+- The query time period must be less then 30 days.
+- If startTime and endTime not sent, return records of the last 30 days by default.
+
+**Response:**
+
+```javascript
+{
+  "totalCount": 2,
+  "result": [
+    {
+      "tranId": 12345678,
+      "fromAccountName": "abctest@gmail.com",
+      "toAccountName": "abctest@gmail.com",
+      "asset": "BTC",
+      "amount": "1",
+      "createTimeStamp": 1640317374000,
+      "status": "SUCCESS"
+    },
+    {
+      "tranId": 12345679,
+      "fromAccountName": "abctest@gmail.com",
+      "toAccountName": "abctest2@gmail.com",
+      "asset": "BTC",
+      "amount": "2",
+      "createTimeStamp": 1640317374000,
+      "status": "SUCCESS"
+    }
+  ]
+}
+```
+
+#### Sub-account Transfer History (For Sub-account)
+
+```shell
+POST /openapi/v1/subAccount/subUserHistory (HMAC SHA256)
+```
+
+**Weight:** 5
+
+**Parameters:**
+
+Name | Type | Mandatory | Description
+------------ | ------------ |-----------| ------------
+asset | STRING | NO |
+startTime | LONG | NO |
+endTime | LONG | NO |
+page | page | NO | Default 1
+limit | page | NO | Default 500, Max 500
+recvWindow | LONG | NO        |
+timestamp | LONG | YES       |
+
+- The query time period must be less then 30 days.
+- If startTime and endTime not sent, return records of the last 30 days by default.
+
+**Response:**
+
+```javascript
+{
+  "totalCount": 2,
+  "result": [
+    {
+      "tranId": 12345678,
+      "fromAccountName": "abctest@gmail.com",
+      "toAccountName": "abctest@gmail.com",
+      "asset": "BTC",
+      "amount": "1",
+      "createTimeStamp": 1640317374000,
+      "status": "SUCCESS"
+    },
+    {
+      "tranId": 12345679,
+      "fromAccountName": "abctest@gmail.com",
+      "toAccountName": "abctest2@gmail.com",
+      "asset": "BTC",
+      "amount": "2",
+      "createTimeStamp": 1640317374000,
+      "status": "SUCCESS"
+    }
+  ]
+}
+```
+

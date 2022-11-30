@@ -318,6 +318,61 @@ Errors consist of two parts: an error code and a message. Codes are universal,
 
 * Reduce margin forbidden
 
+### -1200 SUB_USER_NOT_EXISTS
+
+* Cannot find user with given subUserId
+
+### -1201 SUB_USER_NO_PERMISSION
+
+* No operation authority
+
+### -1202 API_KEY_NOT_EXIST
+
+* ApiKey does not exists
+
+### -1203 MASTER_UNIVERSAL_TRANSFER_ACCOUNT_ERROR
+
+* The fromAccountId or toAccountId must be master or sub user accountId
+
+### -1204 LIMIT_PARAMETER_ERROR
+
+* The limit parameter cannot exceed 500
+
+### -1205 QUERY_TIME_ERROR
+
+* The query time period must be less then 30 days.
+
+### -1207 MASTER_USER_NOT_SUPPORT
+
+* The master user not supported
+
+### -1208 SUB_USER_COUNT_LIMIT
+
+* The number of Sub-account should be less than 6
+
+### -1209  API_KEY_IP_RESTRICT_LIMIT_EXCEEDED
+
+* Up to five ips in the ip whitelist
+
+### -1210 IP_ILLEGAL
+
+* Illegal ip address
+
+### -1211 MASTER_UNIVERSAL_FROM_OR_TO_CHECK
+
+* fromAccountId and toAccountId cannot be sent at the same time
+
+### -1212 QUERY_TIME_ERROR_2
+
+* endTime cannot be earlier than startTime
+
+### -1213 EMAIL_ILLEGAL
+
+* Illegal email
+
+### -1214 SUB_USER_ACCOUNT_NAME_DUPLICATE
+
+* create subAccount duplicate accountName
 
 ### -2010 NEW_ORDER_REJECTED
 
