@@ -2582,7 +2582,6 @@ To cash out
 | internalOrderId | STRING | Yes | your order id
 | currency        | STRING | Yes | eg: PHP  (only support PHP currently)
 | amount          | STRING | Yes | amount of currency
-| amount          | STRING | Yes | amount of currency
 | channelName     | STRING | Yes | channel name
 | channelSubject  | STRING | Yes | channel subject
 
@@ -2722,7 +2721,7 @@ Name            | Type   | Mandatory | Description
 
 #### Fiat order detail
 ```shell
-GET openapi/fiat/v1/detail
+GET openapi/fiat/v1/details
 ```
 
 To get your fiat order detail
